@@ -50,6 +50,22 @@ public class OrderConsumerConfig {
 	  public ConsumerFactory<String, OrderDetails> consumerFactory() {
 	    return new DefaultKafkaConsumerFactory<>(consumerConfigs());
 	  }
+	  
+	  @Bean
+	  public ConsumerFactory<String, String> rawDataconsumerFactory() {
+		  Map<String, Object> config=	  consumerConfigs();
+		  config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+				  StringDeserializer.class);
+	    return new DefaultKafkaConsumerFactory<>(config);
+	  }
+	  
+	  @Bean
+	  public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> rawDataContainerFactory() {
+	    ConcurrentKafkaListenerContainerFactory<String, String> factory =
+	      new ConcurrentKafkaListenerContainerFactory<>();
+	    factory.setConsumerFactory(rawDataconsumerFactory());
+	    return factory;
+	  }
 
 	  @Bean
 	  public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, OrderDetails>> kafkaListenerContainerFactory() {
