@@ -1,12 +1,12 @@
 package com.sahab.order.consumer.exceptions;
 
-public class UserDoesNotExistException extends Exception{
+public class OrderDoesNotExistException extends Exception{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public UserDoesNotExistException() {
+	public OrderDoesNotExistException() {
 		super("User does not Exist.");
 	}
 

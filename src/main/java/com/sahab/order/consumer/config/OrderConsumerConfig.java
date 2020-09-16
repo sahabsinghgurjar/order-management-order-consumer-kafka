@@ -14,6 +14,10 @@ import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
+
+import com.sahab.order.common.model.OrderDetails;
+
 
 @Configuration
 @EnableKafka
@@ -33,23 +37,27 @@ public class OrderConsumerConfig {
 	    props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
 	      StringDeserializer.class);
 	    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-	  	      StringDeserializer.class);
+	    		JsonDeserializer.class);
+	    props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,true);
+	    props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 	    props.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
+	    props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 10000);
+	    props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 	    return props;
 	  }
 
 	  @Bean
-	  public ConsumerFactory<String, String> consumerFactory() {
+	  public ConsumerFactory<String, OrderDetails> consumerFactory() {
 	    return new DefaultKafkaConsumerFactory<>(consumerConfigs());
 	  }
 
 	  @Bean
-	  public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory() {
-	    ConcurrentKafkaListenerContainerFactory<String, String> factory =
+	  public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, OrderDetails>> kafkaListenerContainerFactory() {
+	    ConcurrentKafkaListenerContainerFactory<String, OrderDetails> factory =
 	      new ConcurrentKafkaListenerContainerFactory<>();
 	    factory.setConsumerFactory(consumerFactory());
 	    factory.setRecordFilterStrategy(record -> 
-	      record.value().contains("ignored"));
+	      record.value().getOrderName().contains("ignored"));
 	    return factory;
 	  }
 	  

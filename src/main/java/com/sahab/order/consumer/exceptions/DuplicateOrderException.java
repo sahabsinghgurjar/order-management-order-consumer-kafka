@@ -1,12 +1,12 @@
 package com.sahab.order.consumer.exceptions;
 
-public class UserAlreadyExistException extends Exception{
+public class DuplicateOrderException extends Exception{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public UserAlreadyExistException() {
+	public DuplicateOrderException() {
 		super("User Already Exist.");
 	}
 
